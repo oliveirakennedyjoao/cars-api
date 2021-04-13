@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 //import com.jkoliveira.carros.config.security.SecurityConfiguration;
 import com.jkoliveira.carros.dtos.JwtTokenDTO;
 import com.jkoliveira.carros.dtos.UserCredentialsDTO;
+import com.jkoliveira.carros.dtos.UserDTO;
+import com.jkoliveira.carros.dtos.UserLoginNameDTO;
 import com.jkoliveira.carros.models.User;
 import com.jkoliveira.carros.repositories.UserRepository;
 
@@ -30,17 +32,22 @@ public class AuthService implements UserDetailsService{
 	
 	@Autowired
 	private UserRepository userRepository;
-		
-	public JwtTokenDTO validateUserCredentials(UserCredentialsDTO userCredentialsDTO){
-		
-		UsernamePasswordAuthenticationToken userCredentialsToken = null;			
-		return new JwtTokenDTO(jwtTokenService.generate(userCredentialsToken), "bearer");
-	}
 	
 	public JwtTokenDTO authenticate(UsernamePasswordAuthenticationToken userCredentialsToken){								
 		try {
 			Authentication auth = authManager.authenticate(userCredentialsToken);
-			return new JwtTokenDTO(jwtTokenService.generate(auth), "Bearer");
+			
+			String generatedToken = jwtTokenService.generate(auth);
+			
+			User signedUser = userRepository.getOne(jwtTokenService.getUserId(generatedToken));
+			
+			System.out.println(signedUser);
+			
+			return new JwtTokenDTO(generatedToken, "Bearer", 
+					new UserLoginNameDTO(
+							signedUser.getLogin(), 
+							signedUser.getFirstName(), 
+							signedUser.getLastName()));
 		} catch (Exception e) {
 			throw new BadCredentialsException("Bad Credentials");
 		}		

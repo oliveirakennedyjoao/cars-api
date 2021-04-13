@@ -1,19 +1,10 @@
 package com.jkoliveira.carros.dtos;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-
-import com.jkoliveira.carros.models.Car;
-import com.jkoliveira.carros.models.Profile;
 import com.jkoliveira.carros.models.User;
 
 public class UserDTO {
-	private static final long serialVersionUID = 4392901932696540398L;
+	//private static final long serialVersionUID = 4392901932696540398L;
 	
 	private String firstName;
 	private String lastName;
